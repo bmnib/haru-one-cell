@@ -1,0 +1,1012 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>하루 한 칸</title>
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          "Pretendard Variable",
+          Pretendard,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        color: #272835;
+        background: #f6f6fa;
+        --indigo: #54547f;
+        --indigo-soft: #ececfa;
+        --lavender-wash: #f5f4fc;
+        --neutral-wash: #fafafe;
+        --border: #e7e8ef;
+        --section-radius: 16px;
+        --row-radius: 11px;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        padding: 32px 16px;
+        background: #f6f6fa;
+      }
+
+      .daily-widget {
+        width: min(100%, 560px);
+        margin: 0 auto;
+        padding: 26px;
+        background: #fff;
+        border: 1px solid #e7e8ef;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(48, 49, 76, 0.05);
+      }
+
+      .widget-header { margin-bottom: 22px; }
+      .title-line { display: flex; align-items: flex-start; gap: 5px; }
+      .header-sparkle { width: 15px; height: 15px; margin-top: 2px; color: var(--indigo); flex: 0 0 auto; }
+      .widget-title { margin: 0; font-size: 1.48rem; letter-spacing: -0.04em; }
+      .widget-subtitle { margin: 7px 0 0; color: #77798a; font-size: 0.9rem; line-height: 1.5; }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .widget-section { padding: 19px 0 0; }
+      .section-title { margin: 0 0 11px; font-size: 0.94rem; letter-spacing: -0.02em; }
+      .section-title-row { display: flex; align-items: center; gap: 8px; }
+      .section-icon, .period-icon { width: 16px; height: 16px; color: var(--indigo); flex: 0 0 auto; }
+
+      .routine-card {
+        padding: 17px;
+        background: linear-gradient(135deg, #fff 0%, #fdfdff 100%);
+        border: 1px solid var(--border);
+        border-radius: var(--section-radius);
+      }
+
+      .routine-card-header { position: relative; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+      .routine-card-header .section-title { margin-bottom: 3px; }
+      .routine-card-actions { position: absolute; top: -4px; right: -7px; display: flex; align-items: center; gap: 2px; }
+      .routine-card-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 30px;
+        min-height: 30px;
+        padding: 5px 7px;
+        color: #77798a;
+        background: transparent;
+        border: 0;
+        border-radius: 8px;
+        font: inherit;
+        font-size: 0.82rem;
+        cursor: pointer;
+      }
+      .routine-card-action svg { width: 16px; height: 16px; }
+      .routine-card-action:hover { color: var(--indigo); background: var(--lavender-wash); }
+      .routine-card-action:focus-visible { outline: 3px solid rgba(84, 84, 127, 0.2); outline-offset: 1px; }
+      [data-routine-cancel], [data-routine-done] { display: none; }
+      [data-routine-cancel] { color: #77798a; }
+      [data-routine-done] { color: var(--indigo); font-weight: 650; }
+      .routine-card.is-editing [data-routine-edit] { display: none; }
+      .routine-card.is-editing [data-routine-cancel],
+      .routine-card.is-editing [data-routine-done] { display: inline-flex; }
+      .routine-card > .section-title { margin-bottom: 3px; }
+      .routine-description { margin: 0 0 13px; color: #9698a6; font-size: 0.8rem; line-height: 1.45; }
+      .routine-date-notice { margin: -4px 0 10px; padding: 7px 9px; color: #6e6e91; background: var(--lavender-wash); border-radius: 8px; font-size: 0.75rem; line-height: 1.45; }
+      .routine-section { padding: 0; }
+      .routine-section + .routine-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid #f0f0f5; }
+      .period-title { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; color: var(--indigo); font-size: 0.83rem; font-weight: 650; }
+      .period-icon { width: 17px; height: 17px; }
+
+      .routine-list,
+      .mood-options {
+        display: grid;
+        gap: 8px;
+      }
+
+      .routine-item, .goal-complete, .mood-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .routine-item {
+        min-height: 42px;
+        padding: 0 12px;
+        color: #363744;
+        background: var(--neutral-wash);
+        border: 1px solid #ebecf2;
+        border-radius: var(--row-radius);
+        font-size: 0.92rem;
+        cursor: pointer;
+        transition: background-color 160ms ease, border-color 160ms ease;
+      }
+
+      .routine-item[hidden] { display: none; }
+      .routine-item:hover { background: var(--lavender-wash); border-color: #d9daed; }
+      .routine-item:has(input:checked) { background: var(--lavender-wash); color: #77798a; }
+      .routine-item:has(input:checked) { text-decoration: line-through; text-decoration-color: #c4c4d7; }
+      .routine-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .routine-edit-input { display: none; width: 100%; min-width: 0; min-height: 42px; padding: 8px 11px; color: inherit; font: inherit; background: var(--neutral-wash); border: 1px solid #dfe0eb; border-radius: var(--row-radius); }
+      .routine-card.is-editing .routine-item { padding: 0; background: transparent; border: 0; }
+      .routine-card.is-editing .routine-item > input[type="checkbox"],
+      .routine-card.is-editing .routine-text { display: none; }
+      .routine-card.is-editing .routine-edit-input { display: block; }
+
+      input[type="checkbox"] {
+        appearance: none;
+        width: 19px;
+        height: 19px;
+        margin: 0;
+        flex: 0 0 19px;
+        border: 1.5px solid #aaaac1;
+        border-radius: 6px;
+        background: #fff;
+        cursor: pointer;
+        transition: background-color 160ms ease, border-color 160ms ease;
+      }
+
+      input[type="checkbox"]:checked {
+        border-color: #54547f;
+        background-color: var(--indigo);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3.2 8.1 3 3 6.6-6.5' fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/%3E%3C/svg%3E");
+      }
+
+      input:focus-visible { outline: 3px solid rgba(84, 84, 127, 0.2); outline-offset: 2px; }
+
+      .goal-row {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 12px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--row-radius);
+      }
+
+      input[type="text"] {
+        width: 100%;
+        min-height: 42px;
+        padding: 8px 12px;
+        color: inherit;
+        font: inherit;
+        background: var(--neutral-wash);
+        border: 1px solid #e5e6ee;
+        border-radius: var(--row-radius);
+        transition: border-color 160ms ease, box-shadow 160ms ease;
+      }
+
+      input[type="text"]::placeholder { color: #a1a3b1; }
+      input[type="text"]:focus { border-color: #aaa9cc; outline: 0; box-shadow: 0 0 0 3px rgba(84, 84, 127, 0.1); }
+      .goal-input { min-width: 0; padding-left: 10px !important; background: transparent !important; border: 0 !important; box-shadow: none !important; }
+      .goal-complete { margin: 0; }
+      .goal-section .section-icon { width: 17px; height: 17px; }
+      .progress-section { padding-top: 22px; }
+
+      .progress-heading {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .progress-heading .section-title { margin-bottom: 0; }
+
+      .progress-percent { color: var(--indigo); font-size: 0.85rem; font-weight: 650; }
+
+      .progress-track {
+        height: 7px;
+        overflow: hidden;
+        background: #edeeF4;
+        border-radius: 999px;
+      }
+
+      .progress-bar {
+        width: 0%;
+        height: 100%;
+        background: var(--indigo);
+        border-radius: inherit;
+        transition: width 180ms ease;
+      }
+
+      .progress-note { margin: 8px 0 0; color: #9698a6; font-size: 0.8rem; }
+
+      .record-card { margin-top: 19px; padding: 16px; background: #fcfcff; border: 1px solid var(--border); border-radius: var(--section-radius); }
+      .record-card .widget-section { padding: 0; }
+      .record-card .reflection-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid #f0f0f5; }
+      .mood-options { grid-template-columns: repeat(5, 1fr); gap: 7px; }
+
+      .mood-option {
+        justify-content: center;
+        min-height: 46px;
+        padding: 7px;
+        color: #9a9ca8;
+        background: #fafafe;
+        border: 1px solid #e9eaf0;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: color 160ms ease, background-color 160ms ease;
+      }
+
+      .mood-option input { position: absolute; opacity: 0; pointer-events: none; }
+      .mood-option svg { width: 21px; height: 21px; }
+      .mood-option:hover { color: var(--indigo); background: #f1f0fa; }
+      .mood-option:has(input:checked) { color: var(--indigo); background: var(--indigo-soft); border-color: transparent; }
+      .reflection-input { min-height: 44px !important; background: var(--neutral-wash) !important; }
+
+      @media (max-width: 520px) {
+        body { padding: 16px 12px; }
+        .daily-widget { padding: 22px 17px; border-radius: 18px; }
+        .routine-card, .record-card { padding: 15px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="daily-widget" data-widget="daily-one-cell">
+      <header class="widget-header">
+        <div class="title-line">
+          <svg class="header-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.2 4.3L6.5 8.5l4.3 1.2L12 14l1.2-4.3 4.3-1.2-4.3-1.2L12 3Z"/></svg>
+          <h1 class="widget-title">하루 한 칸</h1>
+        </div>
+        <p class="widget-subtitle">오늘도 부담 없이, 작은 한 칸부터</p>
+      </header>
+
+      <section class="routine-card" aria-labelledby="routine-title">
+        <div class="routine-card-header">
+          <h2 id="routine-title" class="section-title">오늘의 루틴</h2>
+          <div class="routine-card-actions">
+            <button class="routine-card-action" type="button" data-routine-edit aria-label="기본 루틴 편집"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h8"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button>
+            <button class="routine-card-action" type="button" data-routine-cancel aria-label="루틴 편집 취소">취소</button>
+            <button class="routine-card-action" type="button" data-routine-done aria-label="루틴 편집 완료">완료</button>
+          </div>
+        </div>
+        <p class="routine-description">오전 · 오후 · 밤, 세 번의 작은 기회</p>
+        <p class="routine-date-notice" data-routine-date-notice hidden>날짜가 바뀌었어요. 완료하면 오늘 루틴에 반영돼요.</p>
+        <section class="routine-section" data-routine-period="morning" aria-labelledby="morning-title">
+          <h3 id="morning-title" class="period-title"><svg class="period-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18h18M5 14l1.4-1.4M12 5v2M19 14l-1.4-1.4M8 18a4 4 0 0 1 8 0"/></svg>오전</h3>
+          <div class="routine-list">
+            <label class="routine-item"><input type="checkbox" class="routine-checkbox" data-routine-id="morning-water" /><span class="routine-text">물 마시기</span><input class="routine-edit-input" data-routine-edit-input="morning-water" type="text" aria-label="오전 첫 번째 루틴" /></label>
+            <label class="routine-item"><input type="checkbox" class="routine-checkbox" data-routine-id="morning-stretch" /><span class="routine-text">스트레칭</span><input class="routine-edit-input" data-routine-edit-input="morning-stretch" type="text" aria-label="오전 두 번째 루틴" /></label>
+          </div>
+        </section>
+
+        <section class="routine-section" data-routine-period="afternoon" aria-labelledby="afternoon-title">
+          <h3 id="afternoon-title" class="period-title"><svg class="period-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>오후</h3>
+          <div class="routine-list">
+            <label class="routine-item"><input type="checkbox" class="routine-checkbox" data-routine-id="afternoon-study" /><span class="routine-text">공부하기</span><input class="routine-edit-input" data-routine-edit-input="afternoon-study" type="text" aria-label="오후 첫 번째 루틴" /></label>
+            <label class="routine-item"><input type="checkbox" class="routine-checkbox" data-routine-id="afternoon-walk" /><span class="routine-text">산책하기</span><input class="routine-edit-input" data-routine-edit-input="afternoon-walk" type="text" aria-label="오후 두 번째 루틴" /></label>
+          </div>
+        </section>
+
+        <section class="routine-section" data-routine-period="night" aria-labelledby="night-title">
+          <h3 id="night-title" class="period-title"><svg class="period-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 15.1A8.5 8.5 0 0 1 8.9 3.6 8.5 8.5 0 1 0 20.4 15.1Z"/></svg>밤</h3>
+          <div class="routine-list">
+            <label class="routine-item"><input type="checkbox" class="routine-checkbox" data-routine-id="night-reading" /><span class="routine-text">독서</span><input class="routine-edit-input" data-routine-edit-input="night-reading" type="text" aria-label="밤 첫 번째 루틴" /></label>
+            <label class="routine-item"><input type="checkbox" class="routine-checkbox" data-routine-id="night-review" /><span class="routine-text">회고 작성</span><input class="routine-edit-input" data-routine-edit-input="night-review" type="text" aria-label="밤 두 번째 루틴" /></label>
+          </div>
+        </section>
+      </section>
+
+      <section class="widget-section goal-section" data-section="daily-goal" aria-labelledby="goal-title">
+        <h2 id="goal-title" class="section-title section-title-row"><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="m17.7 6.3 2-2"/></svg>오늘 목표</h2>
+        <div class="goal-row">
+          <label class="goal-complete"><input type="checkbox" class="goal-checkbox" data-goal-complete /><span class="sr-only">목표 완료</span></label>
+          <label class="sr-only" for="daily-goal-input">오늘의 목표</label>
+          <input id="daily-goal-input" class="goal-input" data-goal-input type="text" placeholder="오늘 꼭 끝내고 싶은 한 가지" />
+        </div>
+      </section>
+
+      <section class="widget-section progress-section" data-section="daily-progress" aria-labelledby="progress-title">
+        <div class="progress-heading">
+          <h2 id="progress-title" class="section-title">오늘의 흐름</h2>
+          <output class="progress-percent" data-progress-percent>0%</output>
+        </div>
+        <div class="progress-track" role="progressbar" aria-labelledby="progress-title" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="progress-bar" data-progress-bar></div>
+        </div>
+        <p class="progress-note">조금씩 채워지고 있어요...</p>
+      </section>
+
+      <div class="record-card">
+        <section class="widget-section mood-section" data-section="daily-mood" aria-labelledby="mood-title">
+          <h2 id="mood-title" class="section-title">오늘의 기분</h2>
+          <div class="mood-options">
+            <label class="mood-option" aria-label="최고"><input type="radio" name="daily-mood" value="great" data-mood /><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M7.5 9.3c.65.85 1.35.85 2 0M14.5 9.3c.65.85 1.35.85 2 0M7.8 13.1c1.15 1.85 2.55 2.75 4.2 2.75s3.05-.9 4.2-2.75"/></svg><span class="sr-only">최고</span></label>
+            <label class="mood-option" aria-label="좋음"><input type="radio" name="daily-mood" value="good" data-mood /><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 9.5h.01M15.5 9.5h.01M8.7 14.2c.85 1 1.95 1.5 3.3 1.5s2.45-.5 3.3-1.5"/></svg><span class="sr-only">좋음</span></label>
+            <label class="mood-option" aria-label="보통"><input type="radio" name="daily-mood" value="normal" data-mood /><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 9.5h.01M15.5 9.5h.01M9 15h6"/></svg><span class="sr-only">보통</span></label>
+            <label class="mood-option" aria-label="피곤"><input type="radio" name="daily-mood" value="tired" data-mood /><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M7.6 10h2M14.4 10h2M9.3 15.2h5.4"/></svg><span class="sr-only">피곤</span></label>
+            <label class="mood-option" aria-label="힘듦"><input type="radio" name="daily-mood" value="hard" data-mood /><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 9.5h.01M15.5 9.5h.01M8.7 16c.85-1.2 1.95-1.8 3.3-1.8s2.45.6 3.3 1.8"/></svg><span class="sr-only">힘듦</span></label>
+          </div>
+        </section>
+
+        <section class="widget-section reflection-section" data-section="daily-reflection" aria-labelledby="reflection-title">
+          <h2 id="reflection-title" class="section-title">한 줄 회고</h2>
+          <label class="sr-only" for="reflection-input">한 줄 회고</label>
+          <input id="reflection-input" class="reflection-input" data-reflection-input type="text" placeholder="오늘을 한 줄로 남겨 보세요" />
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const DAILY_ROUTINE_STORAGE_KEY = "develophaessyu-daily-routines";
+      const DAILY_ROUTINE_STORAGE_BACKUP_KEY = "develophaessyu-daily-routines-corrupt-backup";
+      const routineCheckboxes = document.querySelectorAll(".routine-checkbox");
+      const routineCard = document.querySelector(".routine-card");
+      const routineEditInputs = document.querySelectorAll("[data-routine-edit-input]");
+      const routineEditButton = document.querySelector("[data-routine-edit]");
+      const routineCancelButton = document.querySelector("[data-routine-cancel]");
+      const routineDoneButton = document.querySelector("[data-routine-done]");
+      const routineDateNotice = document.querySelector("[data-routine-date-notice]");
+      const goalInput = document.querySelector("[data-goal-input]");
+      const goalCheckbox = document.querySelector(".goal-checkbox");
+      const moodInputs = document.querySelectorAll("[data-mood]");
+      const reflectionInput = document.querySelector("[data-reflection-input]");
+      const VALID_MOOD_VALUES = new Set(["great", "good", "normal", "tired", "hard"]);
+      const DEFAULT_ROUTINES = Array.from(document.querySelectorAll(".routine-section")).flatMap((section) =>
+        Array.from(section.querySelectorAll(".routine-checkbox")).map((checkbox) => ({
+          id: checkbox.dataset.routineId,
+          period: section.dataset.routinePeriod,
+          text: checkbox.parentElement.querySelector(".routine-text").textContent.trim(),
+        }))
+      );
+      let currentDateKey = getLocalDateKey();
+      let nextMidnightTimerId;
+      let routineDateNoticeTimerId;
+      let isRoutineEditing = false;
+      let routineEditDraft = null;
+      const progressPercent = document.querySelector("[data-progress-percent]");
+      const progressBar = document.querySelector("[data-progress-bar]");
+      const progressTrack = document.querySelector('[role="progressbar"]');
+
+      function updateProgressDisplay(value) {
+        const progress = Math.min(100, Math.max(0, value));
+
+        progressPercent.textContent = `${progress}%`;
+        progressBar.style.width = `${progress}%`;
+        progressTrack.setAttribute("aria-valuenow", progress);
+      }
+
+      function hasValidText(text) {
+        return typeof text === "string" && text.trim() !== "";
+      }
+
+      function calculateTodayProgress(todayData) {
+        let completedCount = 0;
+        let totalCount = 0;
+
+        if (todayData && Array.isArray(todayData.routines)) {
+          todayData.routines.forEach((routine) => {
+            if (!routine || !hasValidText(routine.text)) {
+              return;
+            }
+
+            totalCount += 1;
+
+            if (routine.completed === true) {
+              completedCount += 1;
+            }
+          });
+        }
+
+        const todayGoal =
+          todayData && typeof todayData.todayGoal === "object" && !Array.isArray(todayData.todayGoal)
+            ? todayData.todayGoal
+            : null;
+
+        if (todayGoal && hasValidText(todayGoal.text)) {
+          totalCount += 1;
+
+          if (todayGoal.completed === true) {
+            completedCount += 1;
+          }
+        }
+
+        return totalCount ? Math.round((completedCount / totalCount) * 100) : 0;
+      }
+
+      function updateTodayProgress() {
+        const dailyData = getStoredDailyData();
+        const todayData = dailyData.days[currentDateKey];
+
+        updateProgressDisplay(calculateTodayProgress(todayData));
+      }
+
+      function getRoutineCheckState(checkbox) {
+        return {
+          id: checkbox.dataset.routineId,
+          completed: checkbox.checked,
+        };
+      }
+
+      function getLocalDateKey() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const date = String(today.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${date}`;
+      }
+
+      function isDataObject(value) {
+        return value !== null && typeof value === "object" && !Array.isArray(value);
+      }
+
+      function backupCorruptedDailyData(rawData) {
+        try {
+          if (localStorage.getItem(DAILY_ROUTINE_STORAGE_BACKUP_KEY) === null) {
+            localStorage.setItem(DAILY_ROUTINE_STORAGE_BACKUP_KEY, rawData);
+          }
+        } catch (error) {
+          console.warn("손상된 일일 루틴 데이터를 백업하지 못했습니다.", error);
+        }
+      }
+
+      function getStoredDailyData() {
+        let storedData;
+
+        try {
+          storedData = localStorage.getItem(DAILY_ROUTINE_STORAGE_KEY);
+        } catch (error) {
+          console.warn("저장된 일일 루틴 데이터를 불러오지 못했습니다.", error);
+          return { version: 1, settings: null, days: {} };
+        }
+
+        if (!storedData) {
+          return { version: 1, settings: null, days: {} };
+        }
+
+        try {
+          const parsedData = JSON.parse(storedData);
+
+          if (!isDataObject(parsedData)) {
+            return { version: 1, settings: null, days: {} };
+          }
+
+          return {
+            version: parsedData.version || 1,
+            settings: isDataObject(parsedData.settings) ? parsedData.settings : null,
+            days: isDataObject(parsedData.days) ? parsedData.days : {},
+          };
+        } catch (error) {
+          backupCorruptedDailyData(storedData);
+          console.warn("저장된 일일 루틴 데이터를 불러오지 못했습니다.", error);
+          return { version: 1, settings: null, days: {} };
+        }
+      }
+
+      function getNormalizedRoutineSettings(routines) {
+        if (!Array.isArray(routines) || routines.length !== DEFAULT_ROUTINES.length) {
+          return null;
+        }
+
+        const normalized = DEFAULT_ROUTINES.map((slot) => {
+          const routine = routines.find(
+            (item) =>
+              isDataObject(item) &&
+              item.id === slot.id &&
+              item.period === slot.period &&
+              typeof item.text === "string"
+          );
+
+          return routine ? { id: slot.id, period: slot.period, text: routine.text.trim() } : null;
+        });
+
+        return normalized.every(Boolean) ? normalized : null;
+      }
+
+      function getRoutineSettingsSourceFromToday(dailyData) {
+        const todayData = dailyData.days[currentDateKey];
+        return todayData && Array.isArray(todayData.routines)
+          ? getNormalizedRoutineSettings(todayData.routines)
+          : null;
+      }
+
+      function ensureRoutineSettings(dailyData) {
+        const normalized =
+          dailyData.settings && getNormalizedRoutineSettings(dailyData.settings.routines);
+
+        if (normalized) {
+          return false;
+        }
+
+        dailyData.settings = {
+          routines: getRoutineSettingsSourceFromToday(dailyData) || DEFAULT_ROUTINES.map((routine) => ({ ...routine })),
+        };
+        return true;
+      }
+
+      function getRoutineSettings(dailyData) {
+        return getNormalizedRoutineSettings(dailyData.settings && dailyData.settings.routines) ||
+          DEFAULT_ROUTINES.map((routine) => ({ ...routine }));
+      }
+
+      function createTodayRoutineSnapshot(dailyData) {
+        const routines = getRoutineSettings(dailyData).map((routine) => ({
+          ...routine,
+          completed: false,
+        }));
+
+        return {
+          routines,
+          todayGoal: { text: "", completed: false },
+          mood: "",
+          reflection: "",
+        };
+      }
+
+      function saveDailyData(dailyData) {
+        try {
+          localStorage.setItem(DAILY_ROUTINE_STORAGE_KEY, JSON.stringify(dailyData));
+          return true;
+        } catch (error) {
+          console.warn("일일 루틴 데이터를 저장하지 못했습니다.", error);
+          return false;
+        }
+      }
+
+      function normalizeDateData(dateData, dailyData) {
+        if (!isDataObject(dateData)) {
+          return { dateData: createTodayRoutineSnapshot(dailyData), changed: true };
+        }
+
+        let changed = false;
+        const normalizedDateData = { ...dateData };
+
+        if (!Array.isArray(dateData.routines)) {
+          normalizedDateData.routines = createTodayRoutineSnapshot(dailyData).routines;
+          changed = true;
+        } else {
+          normalizedDateData.routines = dateData.routines.map((routine) => {
+            if (!isDataObject(routine)) {
+              changed = true;
+              return { id: "", period: "", text: "", completed: false };
+            }
+
+            if (routine.completed === (routine.completed === true)) {
+              return routine;
+            }
+
+            changed = true;
+            return { ...routine, completed: routine.completed === true };
+          });
+        }
+
+        if (!isDataObject(dateData.todayGoal)) {
+          normalizedDateData.todayGoal = { text: "", completed: false };
+          changed = true;
+        } else {
+          const text =
+            typeof dateData.todayGoal.text === "string" && dateData.todayGoal.text.trim() !== ""
+              ? dateData.todayGoal.text
+              : "";
+          const completed = text.trim() !== "" && dateData.todayGoal.completed === true;
+
+          normalizedDateData.todayGoal = { ...dateData.todayGoal, text, completed };
+
+          if (dateData.todayGoal.text !== text || dateData.todayGoal.completed !== completed) {
+            changed = true;
+          }
+        }
+
+        const mood =
+          typeof dateData.mood === "string" && VALID_MOOD_VALUES.has(dateData.mood)
+            ? dateData.mood
+            : "";
+
+        if (dateData.mood !== mood) {
+          normalizedDateData.mood = mood;
+          changed = true;
+        }
+
+        const reflection = typeof dateData.reflection === "string" ? dateData.reflection : "";
+
+        if (dateData.reflection !== reflection) {
+          normalizedDateData.reflection = reflection;
+          changed = true;
+        }
+
+        return { dateData: normalizedDateData, changed };
+      }
+
+      function ensureDateData(dateKey) {
+        const dailyData = getStoredDailyData();
+        const settingsChanged = ensureRoutineSettings(dailyData);
+
+        if (!Object.prototype.hasOwnProperty.call(dailyData.days, dateKey)) {
+          dailyData.days[dateKey] = createTodayRoutineSnapshot(dailyData);
+          saveDailyData(dailyData);
+          return;
+        }
+
+        const normalized = normalizeDateData(dailyData.days[dateKey], dailyData);
+
+        if (normalized.changed || settingsChanged) {
+          dailyData.days[dateKey] = normalized.dateData;
+          saveDailyData(dailyData);
+        }
+      }
+
+      function initializeTodayDailyData() {
+        ensureDateData(currentDateKey);
+      }
+
+      function restoreTodayRoutineCheckStates() {
+        const dailyData = getStoredDailyData();
+        const todayData = dailyData.days[currentDateKey];
+        const settings = getRoutineSettings(dailyData);
+
+        routineCheckboxes.forEach((checkbox) => {
+          const savedRoutine =
+            todayData && Array.isArray(todayData.routines)
+              ? todayData.routines.find(
+                  (routine) => routine && routine.id === checkbox.dataset.routineId
+                )
+              : null;
+
+          checkbox.checked = Boolean(savedRoutine && savedRoutine.completed === true);
+          checkbox.parentElement.hidden = !isRoutineEditing && !hasValidText(savedRoutine && savedRoutine.text);
+          checkbox.parentElement.querySelector(".routine-text").textContent =
+            savedRoutine && typeof savedRoutine.text === "string" ? savedRoutine.text : "";
+        });
+
+        routineEditInputs.forEach((input) => {
+          const source = isRoutineEditing && routineEditDraft ? routineEditDraft : settings;
+          const routine = source.find((item) => item.id === input.dataset.routineEditInput);
+          input.value = routine ? routine.text : "";
+        });
+      }
+
+      function setRoutineEditing(editing) {
+        isRoutineEditing = editing;
+        if (!editing) {
+          routineEditDraft = null;
+          routineDateNotice.hidden = true;
+          window.clearTimeout(routineDateNoticeTimerId);
+          routineDateNoticeTimerId = undefined;
+        }
+        routineCard.classList.toggle("is-editing", editing);
+        restoreTodayRoutineCheckStates();
+
+        if (editing) {
+          routineEditInputs[0].focus();
+        }
+      }
+
+      function getRoutineEditDraft() {
+        return DEFAULT_ROUTINES.map((slot) => {
+          const input = document.querySelector(`[data-routine-edit-input="${slot.id}"]`);
+          return { ...slot, text: typeof input.value === "string" ? input.value : "" };
+        });
+      }
+
+      function getEditedRoutineSettings() {
+        return getRoutineEditDraft().map((routine) => ({ ...routine, text: routine.text.trim() }));
+      }
+
+      function showRoutineDateNotice() {
+        routineDateNotice.hidden = false;
+        window.clearTimeout(routineDateNoticeTimerId);
+        routineDateNoticeTimerId = window.setTimeout(() => {
+          routineDateNotice.hidden = true;
+          routineDateNoticeTimerId = undefined;
+        }, 4500);
+      }
+
+      function cancelRoutineEditing() {
+        checkForDateChange();
+        setRoutineEditing(false);
+        renderTodayState();
+      }
+
+      function saveRoutineSettingsForToday() {
+        const editedSettings = getEditedRoutineSettings();
+        checkForDateChange();
+
+        const dailyData = getStoredDailyData();
+        dailyData.settings = { routines: editedSettings };
+
+        if (!Object.prototype.hasOwnProperty.call(dailyData.days, currentDateKey)) {
+          dailyData.days[currentDateKey] = createTodayRoutineSnapshot(dailyData);
+        } else {
+          const normalized = normalizeDateData(dailyData.days[currentDateKey], dailyData);
+          dailyData.days[currentDateKey] = normalized.dateData;
+        }
+
+        const todayData = dailyData.days[currentDateKey];
+        editedSettings.forEach((setting) => {
+          const savedRoutine = todayData.routines.find(
+            (routine) => routine && routine.id === setting.id
+          );
+
+          if (savedRoutine) {
+            savedRoutine.period = setting.period;
+            savedRoutine.text = setting.text;
+            savedRoutine.completed = hasValidText(setting.text) && savedRoutine.completed === true;
+          } else {
+            todayData.routines.push({ ...setting, completed: false });
+          }
+        });
+
+        const saved = saveDailyData(dailyData);
+        setRoutineEditing(false);
+
+        if (!saved) {
+          renderTodayState();
+          return;
+        }
+
+        renderTodayState();
+      }
+
+      function handleRoutineCheckChange(event) {
+        const routineState = getRoutineCheckState(event.target);
+        const dateChanged = checkForDateChange();
+        const dailyData = getStoredDailyData();
+        const todayData = dailyData.days[currentDateKey];
+
+        if (!todayData || !Array.isArray(todayData.routines)) {
+          return;
+        }
+
+        const savedRoutine = todayData.routines.find(
+          (routine) => routine && routine.id === routineState.id
+        );
+
+        if (!savedRoutine) {
+          return;
+        }
+
+        savedRoutine.completed = routineState.completed;
+        const saved = saveDailyData(dailyData);
+
+        if (dateChanged || !saved) {
+          renderTodayState();
+        } else {
+          updateTodayProgress();
+        }
+      }
+
+      function normalizeGoalText(text) {
+        return typeof text === "string" && text.trim() ? text : "";
+      }
+
+      function getTodayGoalForUpdate() {
+        const dailyData = getStoredDailyData();
+        const todayData = dailyData.days[currentDateKey];
+
+        if (!todayData || typeof todayData !== "object") {
+          return null;
+        }
+
+        if (
+          !todayData.todayGoal ||
+          typeof todayData.todayGoal !== "object" ||
+          Array.isArray(todayData.todayGoal)
+        ) {
+          todayData.todayGoal = { text: "", completed: false };
+        }
+
+        return { dailyData, todayGoal: todayData.todayGoal };
+      }
+
+      function restoreTodayGoalState() {
+        const dailyData = getStoredDailyData();
+        const todayData = dailyData.days[currentDateKey];
+        const savedGoal =
+          todayData && typeof todayData.todayGoal === "object" && !Array.isArray(todayData.todayGoal)
+            ? todayData.todayGoal
+            : null;
+        const text = normalizeGoalText(savedGoal && savedGoal.text);
+
+        goalInput.value = text;
+        goalCheckbox.checked = Boolean(text && savedGoal && savedGoal.completed === true);
+      }
+
+      function handleGoalInputChange(event) {
+        const goalText = event.target.value;
+        const dateChanged = checkForDateChange();
+        const goalData = getTodayGoalForUpdate();
+
+        if (!goalData) {
+          return;
+        }
+
+        goalData.todayGoal.text = normalizeGoalText(goalText);
+
+        if (!goalData.todayGoal.text) {
+          goalData.todayGoal.completed = false;
+          goalCheckbox.checked = false;
+        }
+
+        const saved = saveDailyData(goalData.dailyData);
+
+        if (dateChanged || !saved) {
+          renderTodayState();
+        } else {
+          goalInput.value = goalData.todayGoal.text;
+          updateTodayProgress();
+        }
+      }
+
+      function handleGoalCheckChange(event) {
+        const completed = event.target.checked;
+        const dateChanged = checkForDateChange();
+        const goalData = getTodayGoalForUpdate();
+
+        if (!goalData) {
+          return;
+        }
+
+        goalData.todayGoal.text = normalizeGoalText(goalData.todayGoal.text);
+        goalData.todayGoal.completed = goalData.todayGoal.text ? completed : false;
+        goalInput.value = goalData.todayGoal.text;
+        goalCheckbox.checked = goalData.todayGoal.completed;
+        const saved = saveDailyData(goalData.dailyData);
+
+        if (dateChanged || !saved) {
+          renderTodayState();
+        } else {
+          updateTodayProgress();
+        }
+      }
+
+      function getTodayDataForUpdate() {
+        const dailyData = getStoredDailyData();
+        const todayData = dailyData.days[currentDateKey];
+
+        if (!todayData || typeof todayData !== "object" || Array.isArray(todayData)) {
+          return null;
+        }
+
+        return { dailyData, todayData };
+      }
+
+      function restoreTodayMoodState() {
+        const dailyData = getStoredDailyData();
+        const todayData = dailyData.days[currentDateKey];
+        const savedMood = todayData && typeof todayData.mood === "string" ? todayData.mood : "";
+        const mood = VALID_MOOD_VALUES.has(savedMood) ? savedMood : "";
+
+        moodInputs.forEach((input) => {
+          input.checked = input.value === mood;
+        });
+      }
+
+      function handleMoodChange(event) {
+        const mood = event.target.value;
+
+        if (!VALID_MOOD_VALUES.has(mood)) {
+          return;
+        }
+
+        const dateChanged = checkForDateChange();
+        const todayDataForUpdate = getTodayDataForUpdate();
+
+        if (!todayDataForUpdate) {
+          return;
+        }
+
+        todayDataForUpdate.todayData.mood = mood;
+        const saved = saveDailyData(todayDataForUpdate.dailyData);
+
+        if (dateChanged || !saved) {
+          renderTodayState();
+        }
+      }
+
+      function restoreTodayReflectionState() {
+        const dailyData = getStoredDailyData();
+        const todayData = dailyData.days[currentDateKey];
+
+        reflectionInput.value =
+          todayData && typeof todayData.reflection === "string" ? todayData.reflection : "";
+      }
+
+      function handleReflectionInputChange(event) {
+        const reflection = typeof event.target.value === "string" ? event.target.value : "";
+        const dateChanged = checkForDateChange();
+        const todayDataForUpdate = getTodayDataForUpdate();
+
+        if (!todayDataForUpdate) {
+          return;
+        }
+
+        todayDataForUpdate.todayData.reflection = reflection;
+        const saved = saveDailyData(todayDataForUpdate.dailyData);
+
+        if (dateChanged || !saved) {
+          renderTodayState();
+        }
+      }
+
+      function renderTodayState() {
+        restoreTodayRoutineCheckStates();
+        restoreTodayGoalState();
+        restoreTodayMoodState();
+        restoreTodayReflectionState();
+        updateTodayProgress();
+      }
+
+      function checkForDateChange() {
+        const localDateKey = getLocalDateKey();
+
+        if (localDateKey === currentDateKey) {
+          return false;
+        }
+
+        const draft = isRoutineEditing ? getRoutineEditDraft() : null;
+        ensureDateData(localDateKey);
+        currentDateKey = localDateKey;
+        routineEditDraft = draft;
+        renderTodayState();
+
+        if (draft) {
+          showRoutineDateNotice();
+        }
+
+        return true;
+      }
+
+      function scheduleNextMidnightCheck() {
+        if (nextMidnightTimerId) {
+          window.clearTimeout(nextMidnightTimerId);
+        }
+
+        const now = new Date();
+        const nextMidnight = new Date(now);
+        nextMidnight.setHours(24, 0, 0, 0);
+        const delay = nextMidnight.getTime() - now.getTime();
+
+        nextMidnightTimerId = window.setTimeout(() => {
+          nextMidnightTimerId = undefined;
+          checkForDateChange();
+          scheduleNextMidnightCheck();
+        }, delay);
+      }
+
+      routineCheckboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", handleRoutineCheckChange);
+      });
+
+      routineEditButton.addEventListener("click", () => {
+        checkForDateChange();
+        setRoutineEditing(true);
+      });
+      routineCancelButton.addEventListener("click", cancelRoutineEditing);
+      routineDoneButton.addEventListener("click", saveRoutineSettingsForToday);
+      goalInput.addEventListener("input", handleGoalInputChange);
+      goalCheckbox.addEventListener("change", handleGoalCheckChange);
+      moodInputs.forEach((input) => {
+        input.addEventListener("change", handleMoodChange);
+      });
+      reflectionInput.addEventListener("input", handleReflectionInputChange);
+      window.addEventListener("focus", checkForDateChange);
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+          checkForDateChange();
+        }
+      });
+
+      initializeTodayDailyData();
+      renderTodayState();
+      scheduleNextMidnightCheck();
+    </script>
+  </body>
+</html>
