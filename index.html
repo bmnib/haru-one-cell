@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>하루 한 칸</title>
+    <script>
+      if (window.self !== window.top) {
+        document.documentElement.classList.add("is-embedded");
+      }
+    </script>
     <link
       rel="stylesheet"
       as="style"
@@ -48,6 +53,23 @@
         border: 1px solid #e7e8ef;
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(48, 49, 76, 0.05);
+      }
+
+      html.is-embedded,
+      html.is-embedded body {
+        width: 100%;
+        max-width: 100%;
+        background: #fff;
+      }
+
+      html.is-embedded body {
+        min-width: 0;
+        padding: 0;
+      }
+
+      html.is-embedded .daily-widget {
+        max-width: 100%;
+        padding: 20px;
       }
 
       .widget-header { margin-bottom: 22px; }
@@ -254,6 +276,7 @@
       @media (max-width: 520px) {
         body { padding: 16px 12px; }
         .daily-widget { padding: 22px 17px; border-radius: 18px; }
+        html.is-embedded .daily-widget { padding: 20px 14px; }
         .routine-card, .record-card { padding: 15px; }
       }
     </style>
