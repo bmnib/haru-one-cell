@@ -68,8 +68,9 @@
       }
 
       html.is-embedded .daily-widget {
+        width: min(100%, 620px);
         max-width: 100%;
-        padding: 20px;
+        padding: 12px 14px;
       }
 
       .widget-header { margin-bottom: 22px; }
@@ -253,6 +254,14 @@
       .record-card { margin-top: 19px; padding: 16px; background: #fcfcff; border: 1px solid var(--border); border-radius: var(--section-radius); }
       .record-card .widget-section { padding: 0; }
       .record-card .reflection-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid #f0f0f5; }
+
+      html.is-embedded .widget-header { margin-bottom: 16px; }
+      html.is-embedded .routine-description { margin-bottom: 10px; }
+      html.is-embedded .routine-section + .routine-section { margin-top: 10px; padding-top: 10px; }
+      html.is-embedded .daily-widget > .widget-section { padding-top: 14px; }
+      html.is-embedded .progress-section { padding-top: 16px; }
+      html.is-embedded .record-card { margin-top: 14px; }
+      html.is-embedded .record-card .reflection-section { margin-top: 12px; padding-top: 12px; }
       .mood-options { grid-template-columns: repeat(5, 1fr); gap: 7px; }
 
       .mood-option {
@@ -276,7 +285,7 @@
       @media (max-width: 520px) {
         body { padding: 16px 12px; }
         .daily-widget { padding: 22px 17px; border-radius: 18px; }
-        html.is-embedded .daily-widget { padding: 20px 14px; }
+        html.is-embedded .daily-widget { padding: 12px 10px; }
         .routine-card, .record-card { padding: 15px; }
       }
     </style>
