@@ -41,14 +41,14 @@
       body {
         margin: 0;
         min-width: 320px;
-        padding: 32px 16px;
+        padding: 24px 16px;
         background: #f6f6fa;
       }
 
       .daily-widget {
-        width: min(100%, 560px);
+        width: min(100%, 460px);
         margin: 0 auto;
-        padding: 26px;
+        padding: 18px;
         background: #fff;
         border: 1px solid #e7e8ef;
         border-radius: 20px;
@@ -68,16 +68,15 @@
       }
 
       html.is-embedded .daily-widget {
-        width: min(100%, 620px);
         max-width: 100%;
-        padding: 12px 14px;
+        padding: 10px 12px;
       }
 
-      .widget-header { margin-bottom: 22px; }
+      .widget-header { margin-bottom: 16px; }
       .title-line { display: flex; align-items: flex-start; gap: 5px; }
       .header-sparkle { width: 15px; height: 15px; margin-top: 2px; color: var(--indigo); flex: 0 0 auto; }
-      .widget-title { margin: 0; font-size: 1.48rem; letter-spacing: -0.04em; }
-      .widget-subtitle { margin: 7px 0 0; color: #77798a; font-size: 0.9rem; line-height: 1.5; }
+      .widget-title { margin: 0; font-size: 1.3rem; letter-spacing: -0.04em; }
+      .widget-subtitle { margin: 7px 0 0; color: #77798a; font-size: 0.83rem; line-height: 1.5; }
 
       .sr-only {
         position: absolute;
@@ -91,13 +90,13 @@
         border: 0;
       }
 
-      .widget-section { padding: 19px 0 0; }
-      .section-title { margin: 0 0 11px; font-size: 0.94rem; letter-spacing: -0.02em; }
+      .widget-section { padding: 15px 0 0; }
+      .section-title { margin: 0 0 9px; font-size: 0.88rem; letter-spacing: -0.02em; }
       .section-title-row { display: flex; align-items: center; gap: 8px; }
       .section-icon, .period-icon { width: 16px; height: 16px; color: var(--indigo); flex: 0 0 auto; }
 
       .routine-card {
-        padding: 17px;
+        padding: 13px;
         background: linear-gradient(135deg, #fff 0%, #fdfdff 100%);
         border: 1px solid var(--border);
         border-radius: var(--section-radius);
@@ -131,17 +130,17 @@
       .routine-card.is-editing [data-routine-cancel],
       .routine-card.is-editing [data-routine-done] { display: inline-flex; }
       .routine-card > .section-title { margin-bottom: 3px; }
-      .routine-description { margin: 0 0 13px; color: #9698a6; font-size: 0.8rem; line-height: 1.45; }
-      .routine-date-notice { margin: -4px 0 10px; padding: 7px 9px; color: #6e6e91; background: var(--lavender-wash); border-radius: 8px; font-size: 0.75rem; line-height: 1.45; }
+      .routine-description { margin: 0 0 10px; color: #9698a6; font-size: 0.76rem; line-height: 1.45; }
+      .routine-date-notice { margin: -4px 0 10px; padding: 7px 9px; color: #6e6e91; background: var(--lavender-wash); border-radius: 8px; font-size: 0.72rem; line-height: 1.45; }
       .routine-section { padding: 0; }
-      .routine-section + .routine-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid #f0f0f5; }
-      .period-title { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; color: var(--indigo); font-size: 0.83rem; font-weight: 650; }
+      .routine-section + .routine-section { margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f5; }
+      .period-title { display: flex; align-items: center; gap: 6px; margin: 0 0 6px; color: var(--indigo); font-size: 0.79rem; font-weight: 650; }
       .period-icon { width: 17px; height: 17px; }
 
       .routine-list,
       .mood-options {
         display: grid;
-        gap: 8px;
+        gap: 6px;
       }
 
       .routine-item, .goal-complete, .mood-option {
@@ -151,13 +150,13 @@
       }
 
       .routine-item {
-        min-height: 42px;
-        padding: 0 12px;
+        min-height: 38px;
+        padding: 0 10px;
         color: #363744;
         background: var(--neutral-wash);
         border: 1px solid #ebecf2;
         border-radius: var(--row-radius);
-        font-size: 0.92rem;
+        font-size: 0.87rem;
         cursor: pointer;
         transition: background-color 160ms ease, border-color 160ms ease;
       }
@@ -167,7 +166,7 @@
       .routine-item:has(input:checked) { background: var(--lavender-wash); color: #77798a; }
       .routine-item:has(input:checked) { text-decoration: line-through; text-decoration-color: #c4c4d7; }
       .routine-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .routine-edit-input { display: none; width: 100%; min-width: 0; min-height: 42px; padding: 8px 11px; color: inherit; font: inherit; background: var(--neutral-wash); border: 1px solid #dfe0eb; border-radius: var(--row-radius); }
+      .routine-edit-input { display: none; width: 100%; min-width: 0; min-height: 38px; padding: 7px 10px; color: inherit; font: inherit; background: var(--neutral-wash); border: 1px solid #dfe0eb; border-radius: var(--row-radius); }
       .routine-card.is-editing .routine-item { padding: 0; background: transparent; border: 0; }
       .routine-card.is-editing .routine-item > input[type="checkbox"],
       .routine-card.is-editing .routine-text { display: none; }
@@ -175,10 +174,10 @@
 
       input[type="checkbox"] {
         appearance: none;
-        width: 19px;
-        height: 19px;
+        width: 18px;
+        height: 18px;
         margin: 0;
-        flex: 0 0 19px;
+        flex: 0 0 18px;
         border: 1.5px solid #aaaac1;
         border-radius: 6px;
         background: #fff;
@@ -197,8 +196,8 @@
       .goal-row {
         display: flex;
         align-items: center;
-        min-height: 44px;
-        padding: 0 12px;
+        min-height: 40px;
+        padding: 0 10px;
         background: #fff;
         border: 1px solid var(--border);
         border-radius: var(--row-radius);
@@ -206,8 +205,8 @@
 
       input[type="text"] {
         width: 100%;
-        min-height: 42px;
-        padding: 8px 12px;
+        min-height: 38px;
+        padding: 7px 10px;
         color: inherit;
         font: inherit;
         background: var(--neutral-wash);
@@ -221,18 +220,18 @@
       .goal-input { min-width: 0; padding-left: 10px !important; background: transparent !important; border: 0 !important; box-shadow: none !important; }
       .goal-complete { margin: 0; }
       .goal-section .section-icon { width: 17px; height: 17px; }
-      .progress-section { padding-top: 22px; }
+      .progress-section { padding-top: 17px; }
 
       .progress-heading {
         display: flex;
         justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 10px;
+        gap: 10px;
+        margin-bottom: 8px;
       }
 
       .progress-heading .section-title { margin-bottom: 0; }
 
-      .progress-percent { color: var(--indigo); font-size: 0.85rem; font-weight: 650; }
+      .progress-percent { color: var(--indigo); font-size: 0.8rem; font-weight: 650; }
 
       .progress-track {
         height: 7px;
@@ -249,25 +248,17 @@
         transition: width 180ms ease;
       }
 
-      .progress-note { margin: 8px 0 0; color: #9698a6; font-size: 0.8rem; }
+      .progress-note { margin: 6px 0 0; color: #9698a6; font-size: 0.76rem; }
 
-      .record-card { margin-top: 19px; padding: 16px; background: #fcfcff; border: 1px solid var(--border); border-radius: var(--section-radius); }
+      .record-card { margin-top: 15px; padding: 13px; background: #fcfcff; border: 1px solid var(--border); border-radius: var(--section-radius); }
       .record-card .widget-section { padding: 0; }
-      .record-card .reflection-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid #f0f0f5; }
-
-      html.is-embedded .widget-header { margin-bottom: 16px; }
-      html.is-embedded .routine-description { margin-bottom: 10px; }
-      html.is-embedded .routine-section + .routine-section { margin-top: 10px; padding-top: 10px; }
-      html.is-embedded .daily-widget > .widget-section { padding-top: 14px; }
-      html.is-embedded .progress-section { padding-top: 16px; }
-      html.is-embedded .record-card { margin-top: 14px; }
-      html.is-embedded .record-card .reflection-section { margin-top: 12px; padding-top: 12px; }
-      .mood-options { grid-template-columns: repeat(5, 1fr); gap: 7px; }
+      .record-card .reflection-section { margin-top: 10px; padding-top: 10px; border-top: 1px solid #f0f0f5; }
+      .mood-options { grid-template-columns: repeat(5, 1fr); gap: 6px; }
 
       .mood-option {
         justify-content: center;
-        min-height: 46px;
-        padding: 7px;
+        min-height: 40px;
+        padding: 6px;
         color: #9a9ca8;
         background: #fafafe;
         border: 1px solid #e9eaf0;
@@ -277,16 +268,16 @@
       }
 
       .mood-option input { position: absolute; opacity: 0; pointer-events: none; }
-      .mood-option svg { width: 21px; height: 21px; }
+      .mood-option svg { width: 19px; height: 19px; }
       .mood-option:hover { color: var(--indigo); background: #f1f0fa; }
       .mood-option:has(input:checked) { color: var(--indigo); background: var(--indigo-soft); border-color: transparent; }
-      .reflection-input { min-height: 44px !important; background: var(--neutral-wash) !important; }
+      .reflection-input { min-height: 40px !important; background: var(--neutral-wash) !important; }
 
       @media (max-width: 520px) {
-        body { padding: 16px 12px; }
-        .daily-widget { padding: 22px 17px; border-radius: 18px; }
-        html.is-embedded .daily-widget { padding: 12px 10px; }
-        .routine-card, .record-card { padding: 15px; }
+        body { padding: 12px 10px; }
+        .daily-widget { padding: 14px 12px; border-radius: 18px; }
+        html.is-embedded .daily-widget { padding: 8px 10px; }
+        .routine-card, .record-card { padding: 12px; }
       }
     </style>
   </head>
