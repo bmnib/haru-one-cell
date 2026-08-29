@@ -934,6 +934,37 @@
         }
       }
 
+      function handleMoodClick(event) {
+        const mood = event.target.value;
+
+        if (!VALID_MOOD_VALUES.has(mood)) {
+          return;
+        }
+
+        const dateChanged = checkForDateChange();
+        const todayDataForUpdate = getTodayDataForUpdate();
+
+        if (!todayDataForUpdate) {
+          return;
+        }
+
+        if (todayDataForUpdate.todayData.mood !== mood) {
+          return;
+        }
+
+        event.preventDefault();
+        event.target.checked = false;
+
+        todayDataForUpdate.todayData.mood = "";
+        const saved = saveDailyData(todayDataForUpdate.dailyData);
+
+        if (dateChanged || !saved) {
+          renderTodayState();
+        } else {
+          window.setTimeout(restoreTodayMoodState, 0);
+        }
+      }
+
       function restoreTodayReflectionState() {
         const dailyData = getStoredDailyData();
         const todayData = dailyData.days[currentDateKey];
@@ -1017,6 +1048,7 @@
       goalInput.addEventListener("input", handleGoalInputChange);
       goalCheckbox.addEventListener("change", handleGoalCheckChange);
       moodInputs.forEach((input) => {
+        input.addEventListener("click", handleMoodClick);
         input.addEventListener("change", handleMoodChange);
       });
       reflectionInput.addEventListener("input", handleReflectionInputChange);
